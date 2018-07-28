@@ -1,0 +1,56 @@
+@using Microsoft.AspNetCore.Identity
+@using System.Text;
+@using System.Security.Cryptography;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+
+    var ApplicationUser = await UserManager.GetUserAsync(User);
+    
+    //// Calculate MD5 of email for Gravatar
+    //using (var md5 = MD5.Create())
+    //{
+    //    TempData["emailMD5"] = BitConverter.ToString(md5.ComputeHash((Encoding.ASCII.GetBytes(ApplicationUser.Email.ToLower())))).Replace("-", "").ToLower();
+    //}
+
+    <div class="row">
+        <form asp-area="" asp-controller="Account" asp-action="@nameof(AccountController.Logout)" method="post" id="logoutForm" class="column">
+
+            <a asp-area="" asp-controller="Home" asp-action="Index" style="font-size: 2rem;">
+                <!--<img class="profile-picture"
+                     src="https://www.gravatar.com/avatar/@TempData["emailMD5"]?d=identicon&s=25"
+                     aria-hidden="true" />-->
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;
+                <span>@ApplicationUser.UserName</span>
+            </a>
+
+
+            <button type="submit" class="button button-clear float-right">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;
+                Log out
+            </button>
+            <span class="hide-on-mobile">
+                @if ((string)ViewData["Title"] == "Profile")
+                {
+                    <a asp-controller="Manage" asp-action="@nameof(ManageController.Logins)" class="button button-clear float-right">
+                        <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                        &nbsp;
+                        My logins
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Manage" asp-action="@nameof(ManageController.EditUserInfo)" class="button button-clear float-right">
+                        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+                        &nbsp;
+                        Profile
+                    </a>
+                }
+            </span>
+        </form>
+    </div>
+}

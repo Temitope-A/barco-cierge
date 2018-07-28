@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cierge", "Cierge.csproj", "{D4A1CC2A-E46C-449A-AAC3-86475C57AFAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4A1CC2A-E46C-449A-AAC3-86475C57AFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4A1CC2A-E46C-449A-AAC3-86475C57AFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4A1CC2A-E46C-449A-AAC3-86475C57AFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4A1CC2A-E46C-449A-AAC3-86475C57AFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {441CFD99-D1F2-4971-AC06-7721E44F5A7A}
+	EndGlobalSection
+EndGlobal

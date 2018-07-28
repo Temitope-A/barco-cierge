@@ -1,0 +1,61 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Complete registration";
+}
+
+<div class="row">
+    <div class="column">
+        <h3>Just one more thing!</h3>
+        @if (String.IsNullOrWhiteSpace(Model.ExternalLoginProviderDisplayName))
+        {
+            @:Fill out the following to complete your registration.
+        }
+        else
+        {
+            @:Fill out the following to complete your registration with @Model.ExternalLoginProviderDisplayName.
+                
+            @if (!String.IsNullOrWhiteSpace(Model.Email))
+            {
+                <br />
+                <small><em>(Email: @Model.Email.ToLower())</em></small>
+            }
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="column">
+        <form method="post" asp-action="@nameof(AccountController.Register)">
+
+            <input asp-for="Email" type="hidden" value="@Model.Email" />
+            <input asp-for="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
+            <input asp-for="RememberMe" type="hidden" value="@Model.RememberMe" />
+            <input asp-for="Token" type="hidden" value="@Model.Token" />
+            <input asp-for="Email" type="hidden" value="@Model.Email" />
+
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" />
+
+
+            <!--foreach (var property in typeof(IAdditionalUserInfo).GetProperties(BindingFlags.Public | BindingFlags.Instance)){}-->
+
+            <label asp-for="FullName"></label>
+            <input asp-for="FullName" />
+
+            <label asp-for="FavColor"></label> <!-- !! ADDING FIELDS: If you want users to input field on register -->
+            <input asp-for="FavColor" />
+
+            <button type="submit" class="button-primary">Register</button>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,75 @@
+﻿@model NoticeViewModel
+@{
+    ViewData["Title"] = "Message";
+}
+
+<div class="row">
+    <div class="column">
+    @switch (Model.NoticeType)
+    {
+        case NoticeType.Error:
+            <h3 class="text-danger">Something went wrong!</h3>
+            break;
+        case NoticeType.Warning:
+            <h3 class="text-warning">Ooops!</h3>
+            break;
+        case NoticeType.Success:
+            <h3 class="text-success">Success!</h3>
+            break;
+    }
+
+    </div>
+</div>
+
+
+@if (Model.ShowRequestId)
+{
+    <div class="row">
+        <div class="column">
+            <p>
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </p>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Title))
+{
+    <div class="row">
+        <div class="column">
+            @if (!string.IsNullOrEmpty(Model.Title))
+            {
+                <h4>@Model.Title</h4>
+            }
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <h5>@Model.Description</h5>
+            }
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="column">
+        @if (Model.ShowBackButton)
+        {
+            <button onclick="window.history.back();" class="button button-outline">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;
+                Back
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="button button-outline float-right">
+                <i class="fa fa-home" aria-hidden="true"></i>&nbsp;
+                Home
+            </a>
+        }
+        else
+        {
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="button button-outline">
+                <i class="fa fa-home" aria-hidden="true"></i>&nbsp;
+                Home
+            </a>
+        }
+                
+
+    </div>
+</div>
