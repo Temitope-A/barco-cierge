@@ -52,8 +52,8 @@ namespace Cierge
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                //options.UseSqlite("Data Source=barco-auth.db");
-                options.UseInMemoryDatabase("memorydb");
+                options.UseSqlite("Data Source=barco-auth.db");
+                //options.UseInMemoryDatabase("memorydb");
                 options.UseOpenIddict();
             });
 
@@ -111,7 +111,7 @@ namespace Cierge
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("http://localhost:8001")
+                    builder => builder.WithOrigins("https://barcorota.azurewebsites.net/")
                                 .AllowAnyMethod()
                                 .AllowAnyHeader());
             });

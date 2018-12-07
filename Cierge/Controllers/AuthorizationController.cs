@@ -75,8 +75,7 @@ namespace Cierge.Controllers
             var ticket = await CreateTicketAsync(request, user);
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-            var result = SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
-            return result;
+            return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
         }
 
         [HttpGet("~/connect/logout")]
@@ -100,10 +99,15 @@ namespace Cierge.Controllers
 
             var identity = (ClaimsIdentity)principal.Identity;
 
-            // !! ADDING FIELD: this will include FavColor in generated JWT access tokens & id tokens
-            var favColorClaim = new Claim("favColor", user.FavColor?.ToString() ?? "", ClaimValueTypes.String);
-            favColorClaim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken);
-            identity.AddClaim(favColorClaim);
+            var nickNameClaim = new Claim("nickName", user.NickName?.ToString() ?? "", ClaimValueTypes.String);
+            var fullNameClaim = new Claim("fullName", user.FullName?.ToString() ?? "", ClaimValueTypes.String);
+            //var pinCodeClaim = new Claim("pinCode", user.PinCode.ToString() ?? "", ClaimValueTypes.String);
+
+            nickNameClaim.SetDestinations(OpenIdConnectConstants.Destinations.IdentityToken, OpenIdConnectConstants.Destinations.AccessToken);
+            fullNameClaim.SetDestinations(OpenIdConnectConstants.Destinations.IdentityToken, OpenIdConnectConstants.Destinations.AccessToken);
+
+            identity.AddClaim(nickNameClaim);
+            identity.AddClaim(fullNameClaim);
 
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(principal,
@@ -142,7 +146,9 @@ namespace Cierge.Controllers
                 // The other claims will only be added to the access_token, which is encrypted when using the default format.
                 if ((claim.Type == OpenIdConnectConstants.Claims.Name && ticket.HasScope(OpenIdConnectConstants.Scopes.Profile)) ||
                     (claim.Type == OpenIdConnectConstants.Claims.Email && ticket.HasScope(OpenIdConnectConstants.Scopes.Email)) ||
-                    (claim.Type == OpenIdConnectConstants.Claims.Role && ticket.HasScope(OpenIddictConstants.Claims.Roles)))
+                    (claim.Type == OpenIdConnectConstants.Claims.Role && ticket.HasScope(OpenIddictConstants.Claims.Roles)) ||
+                    (claim.Type == "fullName") || (claim.Type == "nickName")
+                    )
                 {
                     destinations.Add(OpenIdConnectConstants.Destinations.IdentityToken);
                 }

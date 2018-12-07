@@ -61,8 +61,8 @@ namespace Cierge
                     {
                         ClientId = "barco-rota",
                         DisplayName = "Barco Rota",
-                        PostLogoutRedirectUris = { new Uri("http://localhost:8000/signout-oidc") },
-                        RedirectUris = { new Uri("http://localhost:8000/signin-oidc"), new Uri("http://localhost:8000/home") },
+                        PostLogoutRedirectUris = { new Uri("https://barcorota.azurewebsites.net/signout-oidc") },
+                        RedirectUris = { new Uri("https://barcorota.azurewebsites.net/signin-oidc") },
                     };
 
                     await iddictManager.CreateAsync(descriptor, cancellationToken);
@@ -70,7 +70,7 @@ namespace Cierge
 
                 // Create roles
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                string[] roleNames = { "Admin", "Barco", "Wolf" };
+                string[] roleNames = { Constants.ADMIN_ROLE, Constants.BARCO_ROLE, Constants.ROTA_ROLE, Constants.WOLF_ROLE };
                 foreach (var roleName in roleNames)
                 {
                     if (!await roleManager.RoleExistsAsync(roleName))

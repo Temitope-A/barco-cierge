@@ -8,13 +8,13 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator"))
+@if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), Constants.ADMIN_ROLE))
 {
     <div class="row">
         <div class="column">
             <a asp-controller="Admin" asp-action="@nameof(AdminController.Index)" class="button button-outline">
                 <i class="fa fa-sliders" aria-hidden="true"></i>&nbsp;
-                Admin panel (beta)
+                Admin panel
             </a>
         </div>
     </div>

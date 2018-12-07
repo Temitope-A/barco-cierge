@@ -17,7 +17,6 @@ namespace Cierge.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Cierge.Data.ApplicationUser", b =>
@@ -37,13 +36,13 @@ namespace Cierge.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FavColor");
-
                     b.Property<string>("FullName");
 
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("NickName");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -56,6 +55,8 @@ namespace Cierge.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<int>("PinCode");
 
                     b.Property<string>("SecurityStamp");
 

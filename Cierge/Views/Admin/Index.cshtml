@@ -13,10 +13,14 @@
 <div class="row">
     <div class="column">
         <div class="float-right">
+            <a asp-controller="Admin" asp-action="@nameof(AdminController.Create)" class="button button-clear">
+                <i class="fa fa-user-plus" aria-hidden="true"></i>&nbsp;
+            </a>
+        </div>
+        <div class="float-right">
             <span>@Model.UserCount users</span>
         </div>
-
-        <h3>Admin panel (beta)</h3>
+        <h3>Admin panel</h3>
     </div>
 </div>
 

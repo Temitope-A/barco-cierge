@@ -1,0 +1,29 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Newtonsoft.Json;
+
+@model BarcoMemberViewModel
+@{
+    ViewData["Title"] = "Create User";
+}
+
+
+<div class="row">
+    <div class="column">
+        <h3>Create Rota Member</h3>
+    </div>
+</div>
+
+<form method="post" class="row">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="column column-90">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <label asp-for="PinCode"></label>
+        <input asp-for="PinCode" />
+        <button type="submit" class="button button-clear" style="padding: 0 0 0 0;">
+            <i class="fa fa-check" aria-hidden="true"></i> Add
+        </button>
+    </div>
+</form>

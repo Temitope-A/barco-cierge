@@ -27,31 +27,25 @@
 <div class="row">
     <div class="column">
         <form method="post" asp-action="@nameof(AccountController.Register)">
-
             <input asp-for="Email" type="hidden" value="@Model.Email" />
             <input asp-for="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
             <input asp-for="RememberMe" type="hidden" value="@Model.RememberMe" />
             <input asp-for="Token" type="hidden" value="@Model.Token" />
             <input asp-for="Email" type="hidden" value="@Model.Email" />
 
-
             <div asp-validation-summary="All" class="text-danger"></div>
-
 
             <label asp-for="UserName"></label>
             <input asp-for="UserName" />
-
+            <label asp-for="PinCode"></label>
+            <input asp-for="PinCode" />
 
             <!--foreach (var property in typeof(IAdditionalUserInfo).GetProperties(BindingFlags.Public | BindingFlags.Instance)){}-->
-
             <label asp-for="FullName"></label>
             <input asp-for="FullName" />
-
-            <label asp-for="FavColor"></label> <!-- !! ADDING FIELDS: If you want users to input field on register -->
-            <input asp-for="FavColor" />
-
+            <label asp-for="NickName"></label>
+            <input asp-for="NickName" />
             <button type="submit" class="button-primary">Register</button>
-
         </form>
     </div>
 </div>

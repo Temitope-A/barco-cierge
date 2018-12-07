@@ -6,8 +6,8 @@ namespace Cierge.Models
     {
         string UserName { get; set; }
         string FullName { get; set; }
-
-        string FavColor { get; set; } // !! ADDING FIELDS: If you want field to exist
+        string NickName { get; set; }
+        int PinCode { get; set; }
     }
 
     public class AdditionalUserInfo : IAdditionalUserInfo
@@ -17,17 +17,17 @@ namespace Cierge.Models
         [Display(Name = "Username", Prompt = "unique, short, no spaces")]
         public string UserName { get; set; }
 
+        [Required]
         [Display(Name = "Name", Prompt = "optional full name")]
         [StringLength(20, ErrorMessage = "Your name can't be more than 20 characters.")]
         public string FullName { get; set; }
 
+        [Display(Name = "Nickname", Prompt = "optional")]
+        [StringLength(10, ErrorMessage = "Your nick name can't be more than 10 characters.")]
+        public string NickName { get; set; }
 
-        // !! ADDING FIELDS: If If you want field to exist
-        //                   Attributes used for registering & profile editing pages
-
-        [Display(Name = "Favourite Color", Prompt = "optional")]
-        [MinLength(2)]
-        public string FavColor { get; set; }  
+        [Display(Name = "Pincode", Prompt = "required")]
+        public int PinCode { get; set; }
 
     }
 }

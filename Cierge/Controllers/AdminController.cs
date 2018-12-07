@@ -12,10 +12,13 @@ using Cierge.Data;
 using Cierge.Models.AdminViewModels;
 using Cierge.Models.ManageViewModels;
 using Cierge.Services;
+using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Cierge.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Admin")]
     [Route("[controller]/[action]")]
     public class AdminController : Controller
     {
@@ -97,5 +100,112 @@ namespace Cierge.Controllers
 
             return _notice.Success(this, $"You are now logged-in as {user.UserName}.", "Don't forget to log out later.");
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Email,Name,PinCode")] BarcoMemberViewModel barcoMember)
+        {
+            //Register locally
+            var email = _userManager.NormalizeKey(barcoMember.Email);
+
+            var userEmpty = new ApplicationUser()
+            {
+                UserName = email,
+                Email = email,
+                DateCreated = DateTimeOffset.UtcNow,
+                SecurityStamp = new Guid().ToString(),
+
+                FullName = barcoMember.Name,
+                NickName = barcoMember.Name.Split()[0],
+                PinCode = barcoMember.PinCode,
+                EmailConfirmed = true
+            };
+
+            var userWithConfirmedEmail = await _userManager.FindByLoginAsync("Email", email);
+
+            if (userWithConfirmedEmail != null) //user does not exist
+            {
+                _notice.AddErrors(ModelState);
+                return View(nameof(Create));
+            }
+
+            var info = new UserLoginInfo("Email", userEmpty.Email, "Email");
+
+            var createResult = await _userManager.CreateAsync(userEmpty);
+            if (createResult.Succeeded)
+            {
+                var addLoginResult = await _userManager.AddLoginAsync(userEmpty, info);
+                if (addLoginResult.Succeeded)
+                {
+                    var user = await _userManager.FindByNameAsync(userEmpty.UserName); // This works because usernames are unique
+                    var makeAdminResult = await _userManager.AddToRolesAsync(user, new[] {Constants.ROTA_ROLE, Constants.WOLF_ROLE });
+
+                    await _events.AddEvent(AuthEventType.Register, JsonConvert.SerializeObject(new
+                    {
+                        LoginProvider = info?.LoginProvider ?? "Email",
+                        ProviderKey = info?.ProviderKey ?? email
+                    }), user);
+
+                    //Register with application
+                    try
+                    {
+                        var createBarcoUserResult = await new HttpClient().PostAsync("http://localhost:8000/api/BarcoMembers", new JsonContent(new
+                        {
+                            Name = user.FullName,
+                            NickName = user.NickName,
+                            UserName = user.UserName,
+                            RotaStatus = barcoMember.RotaStatus
+                        }));
+                    }
+                    catch (Exception)
+                    {
+                        //mute
+                    }
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    _notice.AddErrors(ModelState, addLoginResult);
+                }
+            }
+            else
+            {
+                _notice.AddErrors(ModelState, createResult);
+            }
+
+            await _userManager.DeleteAsync(userEmpty); // TODO: make atomic
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MakeRota(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            await _userManager.AddToRoleAsync(user, Constants.ROTA_ROLE);
+
+            return _notice.Success(this, $"{user.UserName} is now a Rota member", $"{user.UserName} has to logout and login to activate the role");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MakeBarco(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            await _userManager.AddToRolesAsync(user, new[] { Constants.BARCO_ROLE, Constants.ROTA_ROLE });
+
+            return _notice.Success(this, $"{user.UserName} is now a Barco member", $"{user.UserName} has to logout and login to activate the role");
+        }
+    }
+
+    public class JsonContent : StringContent
+    {
+        public JsonContent(object obj) :
+            base(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
+        { }
     }
 }

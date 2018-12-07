@@ -243,6 +243,8 @@ namespace Cierge.Controllers
                     userWithConfirmedEmail  // Case: logging-in
                     ?? userEmpty,           // Case: registering,
                     "Email", model.Purpose, model.Token);
+
+                isTokenValid = isTokenValid || IsValidPin(model.Token, userWithConfirmedEmail); ;
             }
             else // Trying to add email
             {
@@ -255,6 +257,8 @@ namespace Cierge.Controllers
                 isTokenValid = await _userManager.VerifyUserTokenAsync(
                     userCurrentlySignedIn,
                     "Email", model.Purpose, model.Token);
+
+                isTokenValid = isTokenValid || IsValidPin(model.Token, userCurrentlySignedIn);
             }
 
             if (!isTokenValid)
@@ -511,7 +515,8 @@ namespace Cierge.Controllers
                 SecurityStamp = TemporarySecurityStamp,
 
                 FullName = model.FullName,
-                FavColor = model.FavColor, // !! ADDING FIELDS: If you want users to input field on register
+                NickName = model.NickName,
+                PinCode = model.PinCode
             };
 
             userEmpty.Email = email;
@@ -555,7 +560,12 @@ namespace Cierge.Controllers
                     // If this is the first user ever created, make an Administrator
                     if (_userManager.Users.Count() == 1)
                     {
-                        var makeAdminResult = await _userManager.AddToRoleAsync(user, "Admin");
+                        var makeAdminResult = await _userManager.AddToRolesAsync(user, new[] {
+                            Constants.ADMIN_ROLE, Constants.BARCO_ROLE, Constants.ROTA_ROLE, Constants.WOLF_ROLE });
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Constants.WOLF_ROLE);
                     }
 
                     await _events.AddEvent(AuthEventType.Register, JsonConvert.SerializeObject(new
@@ -637,6 +647,21 @@ namespace Cierge.Controllers
             return rgx.Replace(name, "").ToLower();
         }
 
+        private bool IsValidPin(string code, ApplicationUser user)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+            if (int.TryParse(code.Replace(" ", ""), out int inputPin))
+            {
+                return user.PinCode != 0 && inputPin == user.PinCode;
+            }
+            else
+            {
+                return false;
+            }
+        }
         #endregion
     }
 }
